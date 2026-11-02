@@ -1,4 +1,4 @@
-#Work in progress#
+# Work in progress #
 
 Package manager that has no name yet, which will be used on my LFS.
 

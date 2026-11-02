@@ -1,4 +1,4 @@
-TARGET = PackageManager
+TARGET = compiled/PackageManager
 OBJ_DIR = obj
 INCLUDE_DIR = include
 

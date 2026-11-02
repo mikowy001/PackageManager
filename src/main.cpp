@@ -143,9 +143,7 @@ int main(int argc, char *argv[]) {
         }
     }
 	
-	for(int i = 0; i++; i < package.source.size()){
-		package.raw_sources[i] = std::formatter<typename Tp>
-	}
+	
 
 	print_info(package);
 	
