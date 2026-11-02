@@ -1,0 +1,4 @@
+-x
+c++-header
+-std=c++20
+-I./src
