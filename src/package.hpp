@@ -1,7 +1,16 @@
-#include <string>
 #include <vector>
+#include <string>
 
-typedef struct {
+class Package {
+public:
+	Package();
+	~Package();
+
+	void print_info();
+	void set_scalar_field(const std::string& key, const std::string& val);
+	void add_array_item(const std::string& key, const std::string& item);
+
+private:
 	std::string pkgname;
 	std::string pkgver;
 	std::string pkgrel;
@@ -16,4 +25,6 @@ typedef struct {
 	std::vector<std::string> source;
 	std::vector<std::string> raw_sources;
 	std::vector<std::string> sha256sums;
-} Package;
+	
+
+};
