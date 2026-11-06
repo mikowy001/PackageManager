@@ -15,6 +15,10 @@ https_request::https_request(std::string url){
 
 https_request::~https_request(){}
 
+std::string https_request::get_result(){
+	return result;
+}
+
 std::string https_request::perform(const std::string& url){
 	this->url = url;
 	
