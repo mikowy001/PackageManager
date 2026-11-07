@@ -1,15 +1,48 @@
 #include "package.hpp"
 #include "misc.hpp"
+#include "https_request.hpp"
+#include <filesystem>
 #include <iostream>
 #include <fstream>
+#include <sstream>
+
+namespace fs = std::filesystem;
+
 
 Package::Package(){
-	 const std::string filename = "PKGBUILD";
+	
+	//aka compiled/PackageManager -> ../../
+	fs::path pkgs_dir = DATA.path_to_binary.parent_path().parent_path();
+	
+	if(DATA.debug)
+		debug("pkgs_dir from Package() constructor: " + pkgs_dir.string());
 	
 
-    std::ifstream file(filename);
+	fs::path this_pkg_dir = pkgs_dir/DATA.pkgname_from_arg;
+	
+	if(DATA.debug)
+		std::cout << "DEBUG: this_pkg_dir from Package() constructor: " << this_pkg_dir << std::endl;
+
+	if (fs::exists(this_pkg_dir) && fs::is_directory(this_pkg_dir)){
+		if(DATA.debug)
+			std::cout << "DEBUG: package directory exists." << std::endl;
+		path_to_pkgbuild = this_pkg_dir/"PKGBUILD";
+	} else {
+		
+		create_safe_directory(this_pkg_dir);
+		path_to_pkgbuild = this_pkg_dir/"PKGBUILD";
+		//panic(" " + this_pkg_dir.string() + " directory doesn't exist and unable to create it");
+	}
+
+	
+	//PKGBUILD curling from netwwwoork
+	https_request request;
+
+	//request.perform();
+
+    std::ifstream file(path_to_pkgbuild);
     if(!file.is_open()){
-        std::cerr << "ERROR: Could not open file '" << filename << "'\n";
+        std::cerr << "ERROR: Could not open file '" << path_to_pkgbuild << "'\n";
         panic("1");
     }
 

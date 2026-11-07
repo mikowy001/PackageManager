@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <vector>
 #include <string>
 
@@ -27,4 +28,5 @@ private:
 	std::vector<std::string> sha256sums;
 	
 
+	std::filesystem::path path_to_pkgbuild;
 };

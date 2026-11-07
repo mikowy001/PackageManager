@@ -1,4 +1,5 @@
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -19,12 +20,7 @@ int main(int argc, char *argv[]) {
 	packages[0].print_info();
 	
 
-	if(DATA.url_from_arg == ""){
-		std::cout << "WARNING: You did not give an url as an argument so curl will not be run." << std::endl;		
-	} else {
-		https_request request;
-		request.perform(DATA.url_from_arg);
-	}
-
+	
+	
     return 0;
 }
