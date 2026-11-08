@@ -1,6 +1,7 @@
 #include "package.hpp"
 #include "misc.hpp"
 #include "https_request.hpp"
+#include <algorithm>
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -8,6 +9,7 @@
 
 namespace fs = std::filesystem;
 
+//https://gitlab.archlinux.org/archlinux/packaging/packages/PACKAGE/-/raw/main/PKGBUILD
 
 Package::Package(){
 	
@@ -15,17 +17,17 @@ Package::Package(){
 	fs::path pkgs_dir = DATA.path_to_binary.parent_path().parent_path();
 	
 	if(DATA.debug)
-		debug("pkgs_dir from Package() constructor: " + pkgs_dir.string());
+		debug(" pkgs_dir from Package() constructor: " + pkgs_dir.string());
 	
 
 	fs::path this_pkg_dir = pkgs_dir/DATA.pkgname_from_arg;
 	
 	if(DATA.debug)
-		std::cout << "DEBUG: this_pkg_dir from Package() constructor: " << this_pkg_dir << std::endl;
+		debug(" this_pkg_dir from Package() constructor: " + this_pkg_dir.string());
 
 	if (fs::exists(this_pkg_dir) && fs::is_directory(this_pkg_dir)){
 		if(DATA.debug)
-			std::cout << "DEBUG: package directory exists." << std::endl;
+			debug(" package directory exists.");
 		path_to_pkgbuild = this_pkg_dir/"PKGBUILD";
 	} else {
 		
@@ -42,8 +44,9 @@ Package::Package(){
 
     std::ifstream file(path_to_pkgbuild);
     if(!file.is_open()){
-        std::cerr << "ERROR: Could not open file '" << path_to_pkgbuild << "'\n";
-        panic("1");
+        //std::cerr << "ERROR: Could not open file '" << path_to_pkgbuild << "'\n";
+        panic(" Could not open file '" + path_to_pkgbuild.string() + "'. (Check if it exists?)");
+        //panic("1");
     }
 
 	std::string line = "";
@@ -89,9 +92,9 @@ Package::Package(){
                 }
             }
         } else {
-            bool closing_found = false;
+            //bool closing_found = false;
             if(trimmed_line.find(')') != std::string::npos){
-                closing_found = true;
+                //closing_found = true;
                 in_array = false;
             }
 
@@ -140,4 +143,18 @@ void Package::add_array_item(const std::string& key, const std::string& item) {
     else if (key == "optdepends") optdepends.push_back(item);
     else if (key == "source") source.push_back(item);
     else if (key == "sha256sums") sha256sums.push_back(item);
+}
+
+bool validPackageName(const std::string& name) {
+    if (name.empty())
+        return false;
+
+    return std::all_of(
+        name.begin(), name.end(),
+        [](unsigned char c) {
+            return std::isalnum(c) ||
+                   c == '+' || c == '.' ||
+                   c == '_' || c == '-';
+        }
+    );
 }

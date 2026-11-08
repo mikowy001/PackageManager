@@ -1,9 +1,5 @@
 #include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
 #include <vector>
-#include <string>
 #include <getopt.h>
 
 #include "package.hpp"
@@ -15,10 +11,10 @@ Data DATA;
 int main(int argc, char *argv[]) {
 	handle_arguments(&argc, &argv);
     
-	std::vector<Package> packages = { Package() };
-	
-	packages[0].print_info();
-	
+	if(DATA.pkgname_from_arg != ""){ 
+		std::vector<Package> packages = { Package() };
+		packages[0].print_info();
+	}
 
 	
 	
