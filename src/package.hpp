@@ -28,7 +28,8 @@ private:
 
 	std::filesystem::path path_to_pkgbuild;
 	
-	bool validPackageName(const std::string& name);
+	bool valid_package_name(const std::string& name);
 	void set_scalar_field(const std::string& key, const std::string& val);
 	void add_array_item(const std::string& key, const std::string& item);
+	void download_pkgbuild();
 };

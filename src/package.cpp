@@ -5,7 +5,6 @@
 #include <filesystem>
 #include <iostream>
 #include <fstream>
-#include <sstream>
 
 namespace fs = std::filesystem;
 
@@ -14,7 +13,7 @@ namespace fs = std::filesystem;
 Package::Package(){
 	
 	//aka compiled/PackageManager -> ../../
-	fs::path pkgs_dir = DATA.path_to_binary.parent_path().parent_path();
+	fs::path pkgs_dir = DATA.path_to_binary.parent_path();
 	
 	if(DATA.debug)
 		debug(" pkgs_dir from Package() constructor: " + pkgs_dir.string());
@@ -27,12 +26,13 @@ Package::Package(){
 
 	if (fs::exists(this_pkg_dir) && fs::is_directory(this_pkg_dir)){
 		if(DATA.debug)
-			debug(" package directory exists.");
+			debug(DATA.pkgname_from_arg + " package directory exists.");
 		path_to_pkgbuild = this_pkg_dir/"PKGBUILD";
+		download_pkgbuild();
 	} else {
-		
-		create_safe_directory(this_pkg_dir);
 		path_to_pkgbuild = this_pkg_dir/"PKGBUILD";
+		create_safe_directory(this_pkg_dir);
+		download_pkgbuild();
 		//panic(" " + this_pkg_dir.string() + " directory doesn't exist and unable to create it");
 	}
 
@@ -145,7 +145,7 @@ void Package::add_array_item(const std::string& key, const std::string& item) {
     else if (key == "sha256sums") sha256sums.push_back(item);
 }
 
-bool validPackageName(const std::string& name) {
+bool Package::valid_package_name(const std::string& name) {
     if (name.empty())
         return false;
 
@@ -157,4 +157,9 @@ bool validPackageName(const std::string& name) {
                    c == '_' || c == '-';
         }
     );
+}
+void Package::download_pkgbuild(){
+	std::string url = "https://gitlab.archlinux.org/archlinux/packaging/packages/" 
+			+ DATA.pkgname_from_arg + "/-/raw/main/PKGBUILD";
+	download_file_http(url, path_to_pkgbuild);	
 }

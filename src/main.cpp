@@ -12,10 +12,9 @@ int main(int argc, char *argv[]) {
 	handle_arguments(&argc, &argv);
     
 	if(DATA.pkgname_from_arg != ""){ 
-		std::vector<Package> packages = { Package() };
-		packages[0].print_info();
+		Package package;
+		std::cout << "Succesfuly downloaded package " << DATA.pkgname_from_arg << std::endl;
 	}
-
 	
 	
     return 0;

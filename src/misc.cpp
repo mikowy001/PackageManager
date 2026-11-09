@@ -1,4 +1,6 @@
 #include "misc.hpp"
+#include "https_request.hpp"
+#include <fstream>
 #include <getopt.h>
 #include <iostream>
 #include <filesystem>
@@ -24,6 +26,11 @@ void debug(std::string info) {
 	std::clog <<
 		Color::CYAN << "DEBUG:" << Color::RESET
 		<< info << std::endl;
+}
+
+void warning(std::string info) {
+	std::cout << Color::ORANGE << "WARNING: " << Color::RESET
+	<< info << std::endl;
 }
 
 void handle_arguments(int* argc, char*** argv) {
@@ -101,11 +108,29 @@ bool create_safe_directory(const std::filesystem::path& dir_path){
 	return true;
 }
 
-
+bool save_string_to_file(const std::string& content, const std::filesystem::path& path){
+	std::ofstream file(path);
+	if(!file.is_open())
+		return false;
+	file << content;
+	file.close();
+	if(!file){
+		panic("Error occured while writing/closing a file at " + path.string());
+	}
+	if(DATA.debug)
+		debug("Created and wrote to file " + path.string());
+	return true;
+}
 
 
 size_t write_callback(void* contents, size_t size, size_t nmemb, std::string* userp) {
     size_t totalSize = size * nmemb;
     userp->append((char*)contents, totalSize);
     return totalSize;
+}
+
+void download_file_http(const std::string& url, const std::filesystem::path& path){
+	https_request request;
+	std::string response = request.perform(url);
+	save_string_to_file(response, path);
 }
